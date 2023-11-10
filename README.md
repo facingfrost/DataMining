@@ -25,6 +25,12 @@ To deactivate the virtual environment, open a new terminal or run the command
 ```sh
 deactivate
 ```
+# Fix-Lint Autopep8
+We use `autopep8` to fix the format of the code. Run the following command before pushing to the branch.
+```sh
+sh fix-lint.sh
+```
+
 # Data
 Please add the file `data_with_weather.csv` to the data folder so that all scripts are consistent.
 
