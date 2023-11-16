@@ -5,7 +5,7 @@ import pandas as pd
 def clean_tfloat(data: pd.DataFrame) -> pd.DataFrame:
     '''Cleans the data for the floating point values
 
-    returns a dataframe with the data cleaned     
+    returns a dataframe with the data cleaned
     '''
     return data
 

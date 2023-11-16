@@ -1,3 +1,3 @@
 #!/bin/sh
 
-autopep8 --in-place --recursive src/scripts/
+autopep8 --in-place --recursive --aggressive --aggressive src/scripts/

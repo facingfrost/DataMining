@@ -7,8 +7,10 @@ Repository for the data mining project at the ULB 2023-Fall
 The virtual environment assumes python 3.11. Create your virtual environment and activate it using:
 
 ```sh
-python3.11 -m venv train_env # Creates the virtual environment
-source env/bin/activate #activates the virtual environment
+# Creates the virtual environment
+python3.11 -m venv train_env 
+#activates the virtual environment
+source env/bin/activate 
 ```
 Install the dependencies used by using 
 
@@ -32,6 +34,13 @@ sh fix-lint.sh
 ```
 
 # Data
-Please add the file `data_with_weather.csv` to the data folder so that all scripts are consistent.
+Please add the file `ar41_for_ulb.csv` to the data folder so that all scripts are consistent.
+
+## Order of running the scripts
+Please run in order 
+```sh
+python src/scripts/make_parquet_from_csv.py
+python src/scripts/add_weather.py
+```
 
 For reference about the meteorological data please consult this [link](https://dev.meteostat.net/formats.html#meteorological-parameters)
