@@ -40,7 +40,8 @@ Please add the file `ar41_for_ulb.csv` to the data folder so that all scripts ar
 Please run in order 
 ```sh
 python src/scripts/make_parquet_from_csv.py
-python src/scripts/clean_location.py  
+python src/scripts/clean_location.py
+python src/scripts/clean_outliers.py
 python src/scripts/mark_stop_track.py 
 python src/scripts/add_weather.py
 ```

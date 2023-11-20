@@ -20,6 +20,7 @@ class Filenames(Enum):
     data_cleaned = 'data_cleaned'
     data_enhanced = 'data_enhanced'
     original_data = 'ar41_for_ulb'
+    outliers_fixed = 'outliers_fixed'
 
 
 def get_route_from_filename_csv(filename: Filenames) -> str:

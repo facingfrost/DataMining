@@ -91,7 +91,7 @@ def change_outliers(df,
 
 
 def main():
-    dfIni = io.read_data(io.Filenames.original_data)
+    dfIni = io.read_data(io.Filenames.data_cleaned)
     dfQuantil = df_qunatil(dfIni)
     limit_airTemp, limit_rpm, limit_waterT, limit_oilT, limit_oilP = df_treeshold(
         dfQuantil)
@@ -101,7 +101,7 @@ def main():
                          limit_waterT,
                          limit_oilT,
                          limit_oilP)
-    io.write_data(df, io.Filenames.data_cleaned)
+    io.write_data(df, io.Filenames.outliers_fixed)
     return
 
 
