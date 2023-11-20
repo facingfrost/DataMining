@@ -10,7 +10,7 @@ The virtual environment assumes python 3.11. Create your virtual environment and
 # Creates the virtual environment
 python3.11 -m venv train_env 
 #activates the virtual environment
-source env/bin/activate 
+source train_env/bin/activate 
 ```
 Install the dependencies used by using 
 
@@ -40,7 +40,8 @@ Please add the file `ar41_for_ulb.csv` to the data folder so that all scripts ar
 Please run in order 
 ```sh
 python src/scripts/make_parquet_from_csv.py
-python src/scripts/clean_location.py  
+python src/scripts/clean_location.py
+python src/scripts/clean_outliers.py
 python src/scripts/mark_stop_track.py 
 python src/scripts/add_weather.py
 ```

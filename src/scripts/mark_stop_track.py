@@ -33,7 +33,7 @@ def divide_track_stop(data):
 
 
 def clean():
-    data = io.read_data(io.Filenames.data_cleaned)
+    data = io.read_data(io.Filenames.outliers_fixed)
     data = divide_track_stop(data)
     io.write_data(data, io.Filenames.data_enhanced)
 
