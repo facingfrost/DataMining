@@ -18,6 +18,7 @@ os.chdir(directory_up(root_path, 2))
 class Filenames(Enum):
     data_with_weather = 'data_with_weather'
     data_cleaned = 'data_cleaned'
+    data_enhanced = 'data_enhanced'
     original_data = 'ar41_for_ulb'
 
 

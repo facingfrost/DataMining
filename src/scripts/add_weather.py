@@ -32,9 +32,9 @@ def get_weather_information(cluster_centers, mn_datetime, mx_datetime):
         print('=', end='')
     return information
 
-
-def main():
-    data = io.read_data(io.Filenames.original_data)
+def add_weather(data:pd.DataFrame):
+    '''Adds weather data using kmeans approach.
+    '''
     mn_datetime, mx_datetime = get_min_and_max_dates(data)
     # Train k means
     x_k_means = data[['lat', 'lon']].values
@@ -61,7 +61,11 @@ def main():
     # Clean up
     data.drop(['merge_key'], axis=1, inplace=True)
     data.drop(['cluster_label'], axis=1, inplace=True)
-    # Save The result
+    return data
+
+def main():
+    data = io.read_data(io.Filenames.data_enhanced)
+    data = add_weather(data)
     io.write_data(data, io.Filenames.data_with_weather)
     return
 
