@@ -10,7 +10,7 @@ The virtual environment assumes python 3.11. Create your virtual environment and
 # Creates the virtual environment
 python3.11 -m venv train_env 
 #activates the virtual environment
-source env/bin/activate 
+source train_env/bin/activate 
 ```
 Install the dependencies used by using 
 
