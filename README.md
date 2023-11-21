@@ -44,6 +44,9 @@ python src/scripts/clean_location.py
 python src/scripts/clean_outliers.py
 python src/scripts/mark_stop_track.py 
 python src/scripts/add_weather.py
+python src/scripts/label_data.py 
+python src/scripts/transform_data.py 
+python src/scripts/classification_model.py 
 ```
 
 For reference about the meteorological data please consult this [link](https://dev.meteostat.net/formats.html#meteorological-parameters)
