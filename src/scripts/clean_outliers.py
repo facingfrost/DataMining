@@ -6,7 +6,7 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
 
-def df_qunatil(df):
+def quantil_dataframe(df):
     '''
     Filter period and percentiles
     '''
@@ -22,7 +22,7 @@ def df_qunatil(df):
     return dfQuantil
 
 
-def df_treeshold(df):
+def df_threshold(df):
     '''
     Allows to have the upper whisker of a boxplot
     '''
@@ -85,44 +85,47 @@ def change_outliers(df,
         df['RS_E_OilPress_PC2'], np.nan)
     return df
 
+
 def imp_transform(df):
-    imp_mean = IterativeImputer(random_state=42, max_iter = 10)
+    imp_mean = IterativeImputer(random_state=42, max_iter=10)
     df_train = df.loc[:, ['RS_E_InAirTemp_PC1',
-                        'RS_E_InAirTemp_PC2',
-                        'RS_E_OilPress_PC1',
-                        'RS_E_OilPress_PC2',
-                        'RS_E_RPM_PC1',
-                        'RS_E_RPM_PC2',
-                        'RS_E_WatTemp_PC1',
-                        'RS_E_WatTemp_PC2',
-                        'RS_T_OilTemp_PC1',
-                        'RS_T_OilTemp_PC2']]
+                          'RS_E_InAirTemp_PC2',
+                          'RS_E_OilPress_PC1',
+                          'RS_E_OilPress_PC2',
+                          'RS_E_RPM_PC1',
+                          'RS_E_RPM_PC2',
+                          'RS_E_WatTemp_PC1',
+                          'RS_E_WatTemp_PC2',
+                          'RS_T_OilTemp_PC1',
+                          'RS_T_OilTemp_PC2']]
     imp_mean.fit(df_train)
     df_imp = imp_mean.transform(df_train)
     df.loc[:, ['RS_E_InAirTemp_PC1',
-                        'RS_E_InAirTemp_PC2',
-                        'RS_E_OilPress_PC1',
-                        'RS_E_OilPress_PC2',
-                        'RS_E_RPM_PC1',
-                        'RS_E_RPM_PC2',
-                        'RS_E_WatTemp_PC1',
-                        'RS_E_WatTemp_PC2',
-                        'RS_T_OilTemp_PC1',
-                        'RS_T_OilTemp_PC2']] = df_imp
+               'RS_E_InAirTemp_PC2',
+               'RS_E_OilPress_PC1',
+               'RS_E_OilPress_PC2',
+               'RS_E_RPM_PC1',
+               'RS_E_RPM_PC2',
+               'RS_E_WatTemp_PC1',
+               'RS_E_WatTemp_PC2',
+               'RS_T_OilTemp_PC1',
+               'RS_T_OilTemp_PC2']] = df_imp
     return df
 
+
 def main():
-    dfIni = io.read_data(io.Filenames.data_cleaned)
-    dfQuantil = df_qunatil(dfIni)
-    limit_airTemp, limit_rpm, limit_waterT, limit_oilT, limit_oilP = df_treeshold(
+    df = io.read_data(io.Filenames.data_cleaned)
+    dfQuantil = quantil_dataframe(df)
+    limit_airTemp, limit_rpm, limit_waterT, limit_oilT, limit_oilP = df_threshold(
         dfQuantil)
-    df = change_outliers(dfIni,
+    df = change_outliers(df,
                          limit_airTemp,
                          limit_rpm,
                          limit_waterT,
                          limit_oilT,
                          limit_oilP)
     df = imp_transform(df)
+    df.drop(['period_m'], axis=1, inplace=True)
     io.write_data(df, io.Filenames.outliers_fixed)
     return
 

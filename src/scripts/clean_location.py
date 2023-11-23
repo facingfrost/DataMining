@@ -6,6 +6,7 @@ import numpy as np
 
 MAX_DISTANCE_FOR_OUTLIER_DETECTION_IN_METERS = 3000
 
+
 def get_df_proyected_in_meters(data: pd.DataFrame) -> pd.DataFrame:
     '''Gets the data into a EPSG:3857
 
@@ -47,6 +48,7 @@ def get_outliers_by_distance(data: pd.DataFrame):
     spatial_df['distance'] = spatial_df.apply(get_knn_distance, axis=1)
     return spatial_df['distance'] < MAX_DISTANCE_FOR_OUTLIER_DETECTION_IN_METERS
 
+
 def clean_position(data: pd.DataFrame, distance_cleaning=True) -> pd.DataFrame:
     '''Clean erroneus latitude and longitude
 
@@ -57,6 +59,7 @@ def clean_position(data: pd.DataFrame, distance_cleaning=True) -> pd.DataFrame:
         data = data[distance_outliers_mask]
 
     return data
+
 
 def clean():
     data = io.read_data(io.Filenames.original_data)
