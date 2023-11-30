@@ -8,7 +8,8 @@ def main():
         parquet=False)
     df['timestamps_UTC'] = pd.to_datetime(df.timestamps_UTC)
     df['mapped_veh_id'] = df.mapped_veh_id.apply(int)
-    io.write_data(df, io.Filenames.original_data)
+    df.index = df.index.set_names(['original_index'])
+    io.write_data(df.reset_index(), io.Filenames.original_data)
     return
 
 

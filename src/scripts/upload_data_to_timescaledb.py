@@ -69,7 +69,7 @@ def upload_to_db_efficiently(df, table_name="train"):
 
 
 def main():
-    df = read_write.read_data(read_write.Filenames.data_enhanced).reset_index()
+    df = read_write.read_data(read_write.Filenames.data_enhanced)
     df = df[df.timestamps_UTC > '2023-06-01']
     df.timestamps_UTC = df.timestamps_UTC.dt.strftime('%Y-%m-%d %H:%M:%S.000')
     df.columns = map(str.lower, df.columns)
