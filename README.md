@@ -47,3 +47,24 @@ python src/scripts/add_weather.py
 ```
 
 For reference about the meteorological data please consult this [link](https://dev.meteostat.net/formats.html#meteorological-parameters)
+
+# Dashboard
+
+For the dashboard please set up docker first using 
+```
+docker compose up -d
+```
+
+Afterwards upload the data to questdb using 
+```
+python src/scripts/upload_data_to_timescaledb.py 
+```
+It should take around one minute to upload. 
+
+Now you can go to `localhost:3000` and a dashboard should appear.
+The user is `gabriel` and the password is `gabriel`
+
+To reset grafana and delete cached items you can use 
+```
+rm dashboard/grafana/lib/grafana.db
+```
