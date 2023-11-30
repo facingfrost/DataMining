@@ -32,7 +32,8 @@ def get_weather_information(cluster_centers, mn_datetime, mx_datetime):
         print('=', end='')
     return information
 
-def add_weather(data:pd.DataFrame):
+
+def add_weather(data: pd.DataFrame):
     '''Adds weather data using kmeans approach.
     '''
     mn_datetime, mx_datetime = get_min_and_max_dates(data)
@@ -62,6 +63,7 @@ def add_weather(data:pd.DataFrame):
     data.drop(['merge_key'], axis=1, inplace=True)
     data.drop(['cluster_label'], axis=1, inplace=True)
     return data
+
 
 def main():
     data = io.read_data(io.Filenames.data_enhanced)
