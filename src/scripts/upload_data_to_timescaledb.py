@@ -24,7 +24,7 @@ def upload_to_db_efficiently(df, table_name="train"):
         with conn.cursor() as cursor:
             # create table
             cursor.execute('''CREATE TABLE train (
-                index INT,
+                original_index INT,
                 mapped_veh_id INT,
                 timestamps_UTC TIMESTAMP not null,
                 lat FLOAT,
@@ -39,7 +39,18 @@ def upload_to_db_efficiently(df, table_name="train"):
                 RS_E_WatTemp_PC2 FLOAT,
                 RS_T_OilTemp_PC1 FLOAT,
                 RS_T_OilTemp_PC2 FLOAT,
-                track_or_stop INT
+                track_or_stop INT,
+                temp FLOAT,
+                dwpt FLOAT,
+                rhum FLOAT,
+                prcp FLOAT,
+                snow FLOAT,
+                wdir FLOAT,
+                wspd FLOAT,
+                wpgt FLOAT,
+                pres FLOAT,
+                tsun FLOAT,
+                coco FLOAT
             );''')
             conn.commit()
             # Truncate the existing table (i.e. remove all existing rows)
@@ -69,7 +80,7 @@ def upload_to_db_efficiently(df, table_name="train"):
 
 
 def main():
-    df = read_write.read_data(read_write.Filenames.data_enhanced)
+    df = read_write.read_data(read_write.Filenames.data_with_weather)
     df = df[df.timestamps_UTC > '2023-06-01']
     df.timestamps_UTC = df.timestamps_UTC.dt.strftime('%Y-%m-%d %H:%M:%S.000')
     df.columns = map(str.lower, df.columns)

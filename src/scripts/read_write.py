@@ -23,6 +23,7 @@ class Filenames(Enum):
     outliers_fixed = 'outliers_fixed'
     data_labeled = 'data_labeled'
     data_transformed_woe = 'data_transformed_woe'
+    small_subsample = 'small_subsample'
 
 
 def get_route_from_filename_csv(filename: Filenames) -> str:
