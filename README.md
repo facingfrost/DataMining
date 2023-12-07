@@ -48,6 +48,29 @@ python src/scripts/add_weather.py
 
 For reference about the meteorological data please consult this [link](https://dev.meteostat.net/formats.html#meteorological-parameters)
 
+# Cluster
+Run the script and config the parameters:
+```sh
+python src/scripts/get_cluster_result.py -kmeans_k 5 -kmeans_percentile 95 -dbscan_eps 0.5 -dbscan_min_samples 20 -if_contamination 0.05 -svm_nu 0.05 -train_num 181
+```
+Added columns explanation:
+
+k_cluster: The cluster the point belongs to(0,1,2,3...) calculated by kmeans
+
+k_anomaly: Whether it's an anomaly, detected by threshold(-1,1)
+
+db_cluster: The cluster the point belongs to(-1,0,1,2...) calculated by dbscan
+
+if_cluster: The cluster the point belongs to(-1,1) calculated by isolation forest
+
+svm_cluster: The cluster the point belongs to(-1,1) calculated by svm one class
+
+# Pickle for models
+Run the script and config the parameters:
+```sh
+python src/scripts/dump_load_pickle.py -kmeans_k 5 -kmeans_percentile 95 -dbscan_eps 0.5 -dbscan_min_samples 20 -if_contamination 0.05 -svm_nu 0.05 -train_num 181
+```
+
 # Dashboard
 
 For the dashboard please set up docker first using 

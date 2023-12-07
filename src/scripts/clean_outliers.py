@@ -44,9 +44,9 @@ def df_treshold(df):
     limit_rpm_down = df.loc[['lim_inf']].RS_E_RPM_PC1.values[0]
     limit_waterT_down = df.loc[['lim_inf']].RS_E_WatTemp_PC1.values[0]
     limit_oilT_down = df.loc[['lim_inf']].RS_T_OilTemp_PC1.values[0]
-    limit_oilP_down= df.loc[['lim_inf']].RS_E_OilPress_PC1.values[0]
-    return limit_airTemp_up, limit_rpm_up, limit_waterT_up, limit_oilT_up, limit_oilP_up,\
-           limit_airTemp_down, limit_rpm_down, limit_waterT_down, limit_oilT_down, limit_oilP_down
+    limit_oilP_down = df.loc[['lim_inf']].RS_E_OilPress_PC1.values[0]
+    return limit_airTemp_up, limit_rpm_up, limit_waterT_up, limit_oilT_up, limit_oilP_up, \
+        limit_airTemp_down, limit_rpm_down, limit_waterT_down, limit_oilT_down, limit_oilP_down
 
 
 def change_outliers(df,
@@ -66,10 +66,10 @@ def change_outliers(df,
         df['timestamps_UTC']).dt.strftime('%Y%m').astype(int)
     dfMedian = df[df['period_m'] >= 202304]
     df['RS_E_InAirTemp_PC1'] = np.where(
-        df['RS_E_InAirTemp_PC1'].between(limit_airTemp_down,limit_airTemp_up),
+        df['RS_E_InAirTemp_PC1'].between(limit_airTemp_down, limit_airTemp_up),
         df['RS_E_InAirTemp_PC1'], np.nan)
     df['RS_E_InAirTemp_PC2'] = np.where(
-        df['RS_E_InAirTemp_PC2'].between(limit_airTemp_down,limit_airTemp_up),
+        df['RS_E_InAirTemp_PC2'].between(limit_airTemp_down, limit_airTemp_up),
         df['RS_E_InAirTemp_PC2'], np.nan)
     df['RS_E_RPM_PC1'] = np.where(
         df['RS_E_RPM_PC1'].between(limit_rpm_down, limit_rpm_up),
@@ -78,22 +78,22 @@ def change_outliers(df,
         df['RS_E_RPM_PC2'].between(limit_rpm_down, limit_rpm_up),
         df['RS_E_RPM_PC2'], np.nan)
     df['RS_E_WatTemp_PC1'] = np.where(
-        df['RS_E_WatTemp_PC1'].between(limit_waterT_down,limit_waterT_up),
+        df['RS_E_WatTemp_PC1'].between(limit_waterT_down, limit_waterT_up),
         df['RS_E_WatTemp_PC1'], np.nan)
     df['RS_E_WatTemp_PC2'] = np.where(
-        df['RS_E_WatTemp_PC2'].between(limit_waterT_down,limit_waterT_up),
+        df['RS_E_WatTemp_PC2'].between(limit_waterT_down, limit_waterT_up),
         df['RS_E_WatTemp_PC2'], np.nan)
     df['RS_T_OilTemp_PC1'] = np.where(
-        df['RS_T_OilTemp_PC1'].between(limit_oilT_down,limit_oilT_up),
+        df['RS_T_OilTemp_PC1'].between(limit_oilT_down, limit_oilT_up),
         df['RS_T_OilTemp_PC1'], np.nan)
     df['RS_T_OilTemp_PC2'] = np.where(
-        df['RS_T_OilTemp_PC2'].between(limit_oilT_down,limit_oilT_up),
+        df['RS_T_OilTemp_PC2'].between(limit_oilT_down, limit_oilT_up),
         df['RS_T_OilTemp_PC2'], np.nan)
     df['RS_E_OilPress_PC1'] = np.where(
-        df['RS_E_OilPress_PC1'].between(limit_oilP_down,limit_oilP_up),
+        df['RS_E_OilPress_PC1'].between(limit_oilP_down, limit_oilP_up),
         df['RS_E_OilPress_PC1'], np.nan)
     df['RS_E_OilPress_PC2'] = np.where(
-        df['RS_E_OilPress_PC2'].between(limit_oilP_down,limit_oilP_up),
+        df['RS_E_OilPress_PC2'].between(limit_oilP_down, limit_oilP_up),
         df['RS_E_OilPress_PC2'], np.nan)
     return df
 
@@ -128,9 +128,9 @@ def imp_transform(df):
 def main():
     df = io.read_data(io.Filenames.data_cleaned)
     dfQuantil = quantil_dataframe(df)
-    limit_airTemp_up, limit_rpm_up, limit_waterT_up, limit_oilT_up, limit_oilP_up,\
-    limit_airTemp_down, limit_rpm_down, limit_waterT_down, limit_oilT_down, limit_oilP_down= df_treshold(
-        dfQuantil)
+    limit_airTemp_up, limit_rpm_up, limit_waterT_up, limit_oilT_up, limit_oilP_up, \
+        limit_airTemp_down, limit_rpm_down, limit_waterT_down, limit_oilT_down, limit_oilP_down = df_treshold(
+            dfQuantil)
     df = change_outliers(df,
                          limit_airTemp_up,
                          limit_rpm_up,

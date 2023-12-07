@@ -2,6 +2,7 @@ import pandas as pd
 from enum import Enum
 from fastparquet import write
 import os
+import pickle
 
 
 def directory_up(path: str, n: int):
@@ -23,7 +24,13 @@ class Filenames(Enum):
     outliers_fixed = 'outliers_fixed'
     data_labeled = 'data_labeled'
     data_transformed_woe = 'data_transformed_woe'
+    data_with_cluster = 'data_with_cluster'
+    model_kmeans = 'model_kmeans'
+    model_if = 'model_if'
+    model_svm = 'model_svm'
     small_subsample = 'small_subsample'
+    scaler = 'scaler'
+    detect_anomaly = 'detect_anomaly'
 
 
 def get_route_from_filename_csv(filename: Filenames) -> str:
@@ -32,6 +39,10 @@ def get_route_from_filename_csv(filename: Filenames) -> str:
 
 def get_route_from_filename_parquet(filename: Filenames) -> str:
     return './data/{}.parq'.format(filename.value)
+
+
+def get_route_from_filename_pickle(filename: Filenames) -> str:
+    return './model/{}.pkl'.format(filename.value)
 
 
 def write_data(data_frame: pd.DataFrame, filename: Filenames, parquet=True):
@@ -54,3 +65,13 @@ def read_data(filename: Filenames, parquet=True):
         get_route_from_filename_csv(filename),
         sep=';',
         index_col=0)
+
+
+def write_pickle(trained_model, filename: Filenames):
+    with open(get_route_from_filename_pickle(filename), 'wb') as file:
+        pickle.dump(trained_model, file)
+
+
+def read_pickle(filename: Filenames):
+    with open(get_route_from_filename_pickle(filename), "rb") as file:
+        return pickle.load(file)
