@@ -5,7 +5,7 @@ import psycopg2
 import time
 import numpy as np
 
-TOTAL_SPLITS = 120
+TOTAL_SPLITS = 640
 
 
 def get_df_pages(df):

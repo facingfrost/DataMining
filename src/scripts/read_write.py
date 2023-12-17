@@ -30,6 +30,7 @@ class Filenames(Enum):
     model_svm = 'model_svm'
     small_subsample = 'small_subsample'
     scaler = 'scaler'
+    data_for_dashboard = 'data_for_dashboard'
     detect_anomaly = 'detect_anomaly'
 
 

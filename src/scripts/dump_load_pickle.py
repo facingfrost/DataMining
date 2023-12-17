@@ -1,5 +1,4 @@
 import argparse
-import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, DBSCAN
@@ -7,7 +6,9 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 import read_write as io
-import pickle
+from joblib import Parallel, delayed
+
+NUMBER_OF_CORES = 14
 
 
 def get_args():
@@ -50,30 +51,33 @@ def get_args():
         type=float,
         default=0.05,
         help='The nu in SVM, nu is to specify the percentage of anomalies')
-    # train
-    parser.add_argument(
-        '-train_num',
-        type=int,
-        default=181,
-        help='Specify the train number')
 
     # Parse the command-line arguments
     args = parser.parse_args()
     return args
 
 
-class DetectAnomaly:
-    def __init__(self, args, data):
-        self.args = args
-        self.data = data
+def parallelize_svm_prediction(scaled_data, model):
+    number_of_columns = scaled_data.shape[1]
 
-    def train_model(self):
+    parallel = Parallel(n_jobs=NUMBER_OF_CORES)
+    results = parallel(delayed(model.predict)(
+        scaled_data[i].reshape(-1, number_of_columns)) for i in range(scaled_data.shape[0]))
+
+    return np.vstack(results).flatten()
+
+
+class DetectAnomaly:
+    def __init__(self, args):
+        self.args = args
+
+    def train_model(self, data):
         # select_data
-        con_1 = (self.data["track_or_stop"] == 0)
-        move = self.data[con_1]
+        con_1 = (data["track_or_stop"] == 0)
+        move = data[con_1]
         # random_state for reproducibility
-        selected_data = move.sample(n=200000, random_state=42)
-        del self.data
+        selected_data = move.sample(n=200_000, random_state=42)
+        del data
         # select_column_standardize
         x = selected_data[['RS_E_InAirTemp_PC1',
                            'RS_E_InAirTemp_PC2',
@@ -111,21 +115,18 @@ class DetectAnomaly:
         print("SVM trained!")
 
     def apply_model(self, data):
-        self.data = data
-        x = self.data[['RS_E_InAirTemp_PC1',
-                       'RS_E_InAirTemp_PC2',
-                       'RS_E_OilPress_PC1',
-                       'RS_E_OilPress_PC2',
-                       'RS_E_RPM_PC1',
-                       'RS_E_RPM_PC2',
-                       'RS_E_WatTemp_PC1',
-                       'RS_E_WatTemp_PC2',
-                       'RS_T_OilTemp_PC1',
-                       'RS_T_OilTemp_PC2']]
-        x = x.reset_index(drop=True)
         # apply scaler
-        X = self.scaler_model.transform(x)
-        # apply kmeans
+        X = self.scaler_model.transform((data[['RS_E_InAirTemp_PC1',
+                                               'RS_E_InAirTemp_PC2',
+                                               'RS_E_OilPress_PC1',
+                                               'RS_E_OilPress_PC2',
+                                               'RS_E_RPM_PC1',
+                                               'RS_E_RPM_PC2',
+                                               'RS_E_WatTemp_PC1',
+                                               'RS_E_WatTemp_PC2',
+                                               'RS_T_OilTemp_PC1',
+                                               'RS_T_OilTemp_PC2']]).reset_index(drop=True))
+        # Apply kmeans
         cluster_assignments = self.kmeans_model.predict(X)
         distances_to_center = pairwise_distances_argmin_min(
             X, self.kmeans_model.cluster_centers_)[1]
@@ -134,34 +135,37 @@ class DetectAnomaly:
             self.args.kmeans_percentile)
         anomalies_indices = np.where(distances_to_center > threshold)[0]
         kmeans_anomaly_result = - \
-            (self.data.index.isin(anomalies_indices).astype(int) * 2 - 1)
-        self.data['k_cluster'], self.data['k_anomaly'] = cluster_assignments, kmeans_anomaly_result
+            (data.index.isin(anomalies_indices).astype(int) * 2 - 1)
+        data['k_cluster'], data['k_anomaly'] = cluster_assignments, kmeans_anomaly_result
         print("Kmeans predicted!")
         # apply isolation forest
-        if_labels = self.if_model.predict(X)
-        self.data['if_anomaly'] = if_labels
+        data['if_anomaly'] = self.if_model.predict(X)
         print("Isolation forest predicted!")
         # apply svm
-        svm_labels = self.svm_model.predict(X)
-        self.data["svm_anomaly"] = svm_labels
+        data["svm_anomaly"] = parallelize_svm_prediction(X, self.svm_model)
         print("SVM predicted!")
-        return self.data
+        data['anomalies_triggered']= -((data.svm_anomaly-1)+(data.if_anomaly-1) +(data.k_anomaly-1))/2
+        data.anomalies_triggered = data.anomalies_triggered.apply(int)
+        # return data
 
 
 def main():
     # train model
     args = get_args()
     data = io.read_data(io.Filenames.data_with_weather)
-    detect_anomaly = DetectAnomaly(args, data)
-    detect_anomaly.train_model()
+    detect_anomaly = DetectAnomaly(args)
+    detect_anomaly.train_model(data)
     io.write_pickle(detect_anomaly, io.Filenames.detect_anomaly)
     # apply model
     detect_anomaly_loaded = io.read_pickle(io.Filenames.detect_anomaly)
     data = io.read_data(io.Filenames.data_with_weather)
     # randomly sample some to test
-    selected_data = data.sample(n=100000, random_state=1)
-    anomaly_result = detect_anomaly_loaded.apply_model(selected_data)
-    io.write_data(anomaly_result, io.Filenames.data_with_cluster)
+    detect_anomaly_loaded.apply_model(data)
+    print(data['k_anomaly'].value_counts())
+    print(data['if_anomaly'].value_counts())
+    print(data['svm_anomaly'].value_counts())
+    print(data.head())
+    io.write_data(data.drop(['k_cluster'], axis=1), io.Filenames.data_with_cluster)
 
 
 if __name__ == "__main__":

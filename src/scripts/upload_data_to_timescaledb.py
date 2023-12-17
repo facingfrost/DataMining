@@ -3,9 +3,6 @@ import read_write
 from io import StringIO
 import psycopg2
 
-QUESTDB_HOST = 'localhost'
-QUESTDB_PORT = 9009
-
 
 def upload_to_db_efficiently(df, table_name="train"):
     """
@@ -50,7 +47,11 @@ def upload_to_db_efficiently(df, table_name="train"):
                 wpgt FLOAT,
                 pres FLOAT,
                 tsun FLOAT,
-                coco FLOAT
+                coco FLOAT,
+                k_anomaly INT,
+                if_anomaly INT,
+                svm_anomaly INT,
+                anomalies_triggered INT
             );''')
             conn.commit()
             # Truncate the existing table (i.e. remove all existing rows)
@@ -80,8 +81,8 @@ def upload_to_db_efficiently(df, table_name="train"):
 
 
 def main():
-    df = read_write.read_data(read_write.Filenames.data_with_weather)
-    df = df[df.timestamps_UTC > '2023-06-01']
+    df = read_write.read_data(read_write.Filenames.data_with_cluster)
+    # df = df[df.timestamps_UTC > '2023-06-01']
     df.timestamps_UTC = df.timestamps_UTC.dt.strftime('%Y-%m-%d %H:%M:%S.000')
     df.columns = map(str.lower, df.columns)
     upload_to_db_efficiently(df)

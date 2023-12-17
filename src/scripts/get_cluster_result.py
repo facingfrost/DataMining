@@ -7,7 +7,6 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 import read_write as io
-import pickle
 
 
 def get_args():
